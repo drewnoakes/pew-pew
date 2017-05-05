@@ -1,6 +1,6 @@
-
 .vs/
 bin/
 obj/
 packages/
 .idea/
+*.user
