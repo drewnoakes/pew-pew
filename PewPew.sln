@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sfxr", "Sfxr\Sfxr.csproj", "{FA31A37A-4EAD-4A48-845E-95DD19D0D837}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PewPew", "PewPew\PewPew.csproj", "{FA31A37A-4EAD-4A48-845E-95DD19D0D837}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sfxr.Example", "Sfxr.Example\Sfxr.Example.csproj", "{16EC1773-093A-42C9-A3A4-0BA03206868B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PewPew.Example", "PewPew.Example\PewPew.Example.csproj", "{16EC1773-093A-42C9-A3A4-0BA03206868B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{81462EFF-CA72-4A4D-85B7-A62F2E594E52}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

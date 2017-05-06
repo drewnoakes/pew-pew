@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <AssemblyName>PewPew</AssemblyName>
+    <RootNamespace>PewPew</RootNamespace>
+    <Authors>Drew Noakes</Authors>
+    <Description />
+    <Copyright>Drew Noakes 2017</Copyright>
+    <PackageProjectUrl>https://github.com/drewnoakes/pewpew</PackageProjectUrl>
+    <RepositoryUrl>git@github.com:drewnoakes/pew-pew.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>pew pew;sfxr;sound effects;audio;synth;synthesizer</PackageTags>
+    <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="1.8.0" />
+  </ItemGroup>
+</Project>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Sfxr.Example
+namespace PewPew.Example
 {
     internal static class Program
     {
@@ -9,13 +9,13 @@ namespace Sfxr.Example
 
         private static async Task<int> MainAsync()
         {
-            Console.Out.WriteLine($"Creating {nameof(SfxrMixer)}");
+            Console.Out.WriteLine($"Creating {nameof(PewPewMixer)}");
 
-            using (var sfxr = new SfxrMixer())
+            using (var mixer = new PewPewMixer())
             {
-                Console.Out.WriteLine($"Playing {nameof(SfxrPatch)}");
+                Console.Out.WriteLine($"Playing {nameof(PewPewPatch)}");
 
-                await sfxr.PlayAsync(new SfxrPatch());
+                await mixer.PlayAsync(new PewPewPatch());
 
                 await Task.Delay(500);
 

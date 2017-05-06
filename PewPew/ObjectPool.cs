@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace Sfxr
+namespace PewPew
 {
     internal sealed class ObjectPool<T> where T : class, new()
     {

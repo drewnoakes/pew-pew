@@ -1,9 +1,9 @@
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Sfxr
+namespace PewPew
 {
-    public enum SfxrWaveType
+    public enum PewPewWaveType
     {
         Square,
         Sawtooth,
@@ -11,9 +11,9 @@ namespace Sfxr
         Noise
     }
 
-    public sealed class SfxrPatch
+    public sealed class PewPewPatch
     {
-        public SfxrWaveType WaveType { get; set; }
+        public PewPewWaveType WaveType { get; set; }
 
         public float BaseFreq { get; set; }
         public float FreqLimit { get; set; }
@@ -44,8 +44,8 @@ namespace Sfxr
         public float ArpSpeed { get; set; }
         public float ArpMod { get; set; }
 
-        public SfxrPatch(
-            SfxrWaveType waveType = SfxrWaveType.Square,
+        public PewPewPatch(
+            PewPewWaveType waveType = PewPewWaveType.Square,
             float baseFreq = 0.3f,
             float freqLimit = 0.1f,
             float freqRamp = 0,

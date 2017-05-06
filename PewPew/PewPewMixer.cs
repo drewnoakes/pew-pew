@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 
-namespace Sfxr
+namespace PewPew
 {
-    public sealed class SfxrMixer : IDisposable
+    public sealed class PewPewMixer : IDisposable
     {
         private const int SampleRate = 44100;
         private const int ChannelCount = 1;
@@ -15,10 +15,10 @@ namespace Sfxr
 
         private readonly Dictionary<ISampleProvider, TaskCompletionSource<byte>> _tcsByProvider = new Dictionary<ISampleProvider, TaskCompletionSource<byte>>();
         private readonly MixingSampleProvider _mixer = new MixingSampleProvider(WaveFormat) {ReadFully = true};
-        private readonly ObjectPool<SfxrSynth> _synths = new ObjectPool<SfxrSynth>();
+        private readonly ObjectPool<PewPewSynth> _synths = new ObjectPool<PewPewSynth>();
         private readonly WaveOut _waveOut = new WaveOut();
 
-        public SfxrMixer()
+        public PewPewMixer()
         {
             // Configure mixer to stay playing,
             _mixer.ReadFully = true;
@@ -26,7 +26,7 @@ namespace Sfxr
             {
                 if (_tcsByProvider.TryGetValue(args.SampleProvider, out var tcs))
                     tcs.TrySetResult(0);
-                if (args.SampleProvider is SfxrSynth synth)
+                if (args.SampleProvider is PewPewSynth synth)
                     _synths.Release(synth);
             };
 
@@ -34,7 +34,7 @@ namespace Sfxr
             _waveOut.Play();
         }
 
-        public Task PlayAsync(SfxrPatch patch)
+        public Task PlayAsync(PewPewPatch patch)
         {
             var synth = _synths.Take();
 

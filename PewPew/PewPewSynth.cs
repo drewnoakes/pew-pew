@@ -4,16 +4,16 @@ using NAudio.Wave;
 // ReSharper disable IdentifierTypo
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
-namespace Sfxr
+namespace PewPew
 {
-    public sealed class SfxrSynth : ISampleProvider
+    public sealed class PewPewSynth : ISampleProvider
     {
         private readonly Random _random = new Random();
 
         private const float master_vol = 0.05f;
         private const float sound_vol = 0.5f;
 
-        private SfxrPatch _patch;
+        private PewPewPatch _patch;
 
         private const int PhaserBufferLength = 1024;
 
@@ -53,7 +53,7 @@ namespace Sfxr
         private int arp_limit;
         private double arp_mod;
 
-        public void Play(SfxrPatch patch)
+        public void Play(PewPewPatch patch)
         {
             _patch = patch;
             Initialise(restart: false);
@@ -208,7 +208,7 @@ namespace Sfxr
                     {
 //				        phase = 0;
                         phase %= period;
-                        if (_patch.WaveType == SfxrWaveType.Noise)
+                        if (_patch.WaveType == PewPewWaveType.Noise)
                         {
                             for (var j = 0; j < 32; j++)
                                 noise_buffer[j] = (float)_random.NextDouble()*2f - 1f;
@@ -219,16 +219,16 @@ namespace Sfxr
                     var fp = (float)phase/period;
                     switch (_patch.WaveType)
                     {
-                        case SfxrWaveType.Square:
+                        case PewPewWaveType.Square:
                             sample = fp < square_duty ? 0.5f : -0.5f;
                             break;
-                        case SfxrWaveType.Sawtooth:
+                        case PewPewWaveType.Sawtooth:
                             sample = 1f - fp*2;
                             break;
-                        case SfxrWaveType.Sine:
+                        case PewPewWaveType.Sine:
                             sample = (float)Math.Sin(fp*2*Math.PI);
                             break;
-                        case SfxrWaveType.Noise:
+                        case PewPewWaveType.Noise:
                             sample = noise_buffer[phase*32/period];
                             break;
                     }
@@ -277,6 +277,6 @@ namespace Sfxr
             return sampleCount;
         }
 
-        WaveFormat ISampleProvider.WaveFormat => SfxrMixer.WaveFormat;
+        WaveFormat ISampleProvider.WaveFormat => PewPewMixer.WaveFormat;
     }
 }
