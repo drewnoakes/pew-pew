@@ -62,13 +62,13 @@ namespace PewPew
 
         private void Initialise(bool restart)
         {
-            fperiod = 100.0/(_patch.BaseFreq*_patch.BaseFreq + 0.001);
+            fperiod = 100.0/(_patch.StartFrequency*_patch.StartFrequency + 0.001);
             period = (int)fperiod;
-            fmaxperiod = 100.0/(_patch.FreqLimit*_patch.FreqLimit + 0.001);
-            fslide = 1.0 - Math.Pow(_patch.FreqRamp, 3.0)*0.01;
-            fdslide = -Math.Pow(_patch.FreqDramp, 3.0)*0.000001;
-            square_duty = 0.5f - _patch.Duty*0.5f;
-            square_slide = -_patch.DutyRamp*0.00005f;
+            fmaxperiod = 100.0/(_patch.MinimumFrequency*_patch.MinimumFrequency + 0.001);
+            fslide = 1.0 - Math.Pow(_patch.FrequencySlide, 3.0)*0.01;
+            fdslide = -Math.Pow(_patch.FrequencyDeltaSlide, 3.0)*0.000001;
+            square_duty = 0.5f - _patch.SquareWaveDuty*0.5f;
+            square_slide = -_patch.SquareWaveDutySweep*0.00005f;
             if (_patch.ArpMod >= 0f)
                 arp_mod = 1.0 - Math.Pow(_patch.ArpMod, 2.0)*0.9;
             else
@@ -84,31 +84,31 @@ namespace PewPew
                 // reset filter
                 fltp = 0f;
                 fltdp = 0f;
-                fltw = (float)Math.Pow(_patch.LpfFreq, 3f)*0.1f;
-                fltw_d = 1f + _patch.LpfRamp*0.0001f;
+                fltw = (float)Math.Pow(_patch.LpfCutoffFrequency, 3f)*0.1f;
+                fltw_d = 1f + _patch.LpfCutoffSweep*0.0001f;
                 fltdmp = 5f/(1f + (float)Math.Pow(_patch.LpfResonance, 2f)*20f)*(0.01f + fltw);
                 if (fltdmp > 0.8f)
                     fltdmp = 0.8f;
                 fltphp = 0f;
-                flthp = (float)Math.Pow(_patch.HpfFreq, 2f)*0.1f;
-                flthp_d = 1f + _patch.HpfRamp*0.0003f;
+                flthp = (float)Math.Pow(_patch.HpfCutoffFrequency, 2f)*0.1f;
+                flthp_d = 1f + _patch.HpfSweep*0.0003f;
                 // reset vibrato
                 vib_phase = 0f;
-                vib_speed = (float)Math.Pow(_patch.VibSpeed, 2f)*0.01f;
-                vib_amp = _patch.VibStrength*0.5f;
+                vib_speed = (float)Math.Pow(_patch.VibratoSpeed, 2f)*0.01f;
+                vib_amp = _patch.VibratoDepth*0.5f;
                 // reset envelope
                 env_vol = 0f;
                 env_stage = 0;
                 env_time = 0;
-                env_length[0] = (int)(_patch.EnvAttack*_patch.EnvAttack*100000f);
-                env_length[1] = (int)(_patch.EnvSustain*_patch.EnvSustain*100000f);
-                env_length[2] = (int)(_patch.EnvDecay*_patch.EnvDecay*100000f);
+                env_length[0] = (int)(_patch.EnvelopeAttackTime*_patch.EnvelopeAttackTime*100000f);
+                env_length[1] = (int)(_patch.EnvelopeSustainTime*_patch.EnvelopeSustainTime*100000f);
+                env_length[2] = (int)(_patch.EnvelopeDecayTime*_patch.EnvelopeDecayTime*100000f);
 
-                fphase = (float)Math.Pow(_patch.PhaOffset, 2f)*1020f;
-                if (_patch.PhaOffset < 0f)
+                fphase = (float)Math.Pow(_patch.PhaserOffset, 2f)*1020f;
+                if (_patch.PhaserOffset < 0f)
                     fphase = -fphase;
-                fdphase = (float)Math.Pow(_patch.PhaRamp, 2f)*1f;
-                if (_patch.PhaRamp < 0f)
+                fdphase = (float)Math.Pow(_patch.PhaserSweep, 2f)*1f;
+                if (_patch.PhaserSweep < 0f)
                     fdphase = -fdphase;
                 iphase = Math.Abs((int)fphase);
                 ipp = 0;
@@ -150,7 +150,7 @@ namespace PewPew
                 if (fperiod > fmaxperiod)
                 {
                     fperiod = fmaxperiod;
-                    if (_patch.FreqLimit > 0f)
+                    if (_patch.MinimumFrequency > 0f)
                         playing_sample = false;
                 }
                 var rfperiod = (float)fperiod;
@@ -179,7 +179,7 @@ namespace PewPew
                 if (env_stage == 0)
                     env_vol = (float)env_time/env_length[0];
                 if (env_stage == 1)
-                    env_vol = 1f + (float)Math.Pow(1f - (float)env_time/env_length[1], 1f)*2f*_patch.EnvPunch;
+                    env_vol = 1f + (float)Math.Pow(1f - (float)env_time/env_length[1], 1f)*2f*_patch.EnvelopeSustainPunch;
                 if (env_stage == 2)
                     env_vol = 1f - (float)env_time/env_length[2];
 
@@ -240,7 +240,7 @@ namespace PewPew
                         fltw = 0f;
                     if (fltw > 0.1f)
                         fltw = 0.1f;
-                    if (_patch.LpfFreq != 1f)
+                    if (_patch.LpfCutoffFrequency != 1f)
                     {
                         fltdp += (sample - fltp)*fltw;
                         fltdp -= fltdp*fltdmp;
