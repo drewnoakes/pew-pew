@@ -1,10 +1,10 @@
 # pew-pew
 
-This library is a port of the sfxr sound generator from C++ to C#.
+This library is a port of [DrPetter's sfxr](http://www.drpetter.se/project_sfxr.html) sound generator from C++ to C#.
 
 It provides a simple way to synthesize and play sound effects.
 
-Playback is provided by the amazing NAudio library.
+Playback is provided by Mark Heath's amazing [NAudio](https://github.com/naudio/NAudio) library.
 
 ## Usage
 
