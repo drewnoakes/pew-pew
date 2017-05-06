@@ -1,0 +1,85 @@
+﻿<Window x:Class="PewPew.Editor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PewPew.Editor"
+        xmlns:pewPew="clr-namespace:PewPew;assembly=PewPew"
+        mc:Ignorable="d"
+        Title="PewPew Editor"
+        Height="350"
+        Width="525" d:DataContext="{d:DesignInstance local:PatchViewModel}">
+
+  <StackPanel>
+
+    <TextBlock>Wave</TextBlock>
+    <ComboBox SelectedItem="{Binding WaveType}">
+      <pewPew:PewPewWaveType>Square</pewPew:PewPewWaveType>
+      <pewPew:PewPewWaveType>Noise</pewPew:PewPewWaveType>
+      <pewPew:PewPewWaveType>Sawtooth</pewPew:PewPewWaveType>
+      <pewPew:PewPewWaveType>Sine</pewPew:PewPewWaveType>
+    </ComboBox>
+
+    <TextBlock>Start Freq</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding StartFrequency}" />
+    <TextBlock>Min Freq</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding MinimumFrequency}" />
+    <TextBlock>Freq Slide</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding FrequencySlide}" />
+    <TextBlock>Freq Slide Delta</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding FrequencyDeltaSlide}" />
+
+    <TextBlock>Attack</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding EnvelopeAttackTime}" />
+    <TextBlock>Sustain</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding EnvelopeSustainTime}" />
+    <TextBlock>Sustain Punch</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding EnvelopeSustainPunch}" />
+    <TextBlock>Decay</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding EnvelopeDecayTime}" />
+
+    <TextBlock>Square Wave Duty</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding SquareWaveDuty}" />
+    <TextBlock>Square Wave Duty Sweep</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding SquareWaveDutySweep}" />
+
+    <TextBlock>Vibrato Depth</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding VibratoDepth}" />
+    <TextBlock>Vibrato Speed</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding VibratoSpeed}" />
+
+    <TextBlock>LpfResonance</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding LpfResonance}" />
+    <TextBlock>LpfCutoffFrequency</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding LpfCutoffFrequency}" />
+    <TextBlock>LpfCutoffSweep</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding LpfCutoffSweep}" />
+
+    <TextBlock>HpfCutoffFrequency</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding HpfCutoffFrequency}" />
+    <TextBlock>HpfSweep</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding HpfSweep}" />
+
+    <TextBlock>PhaserOffset</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding PhaserOffset}" />
+    <TextBlock>PhaserSweep</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding PhaserSweep}" />
+    <TextBlock>RepeatSpeed</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding RepeatSpeed}" />
+    <TextBlock>ArpSpeed</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding ArpSpeed}" />
+    <TextBlock>ArpMod</TextBlock>
+    <Slider Minimum="0" Maximum="2" Value="{Binding ArpMod}" />
+
+    <Button Click="OnPlay">Play</Button>
+    <Button Click="OnLaser">Laser</Button>
+    <Button Click="OnPickup">Coin</Button>
+    <Button Click="OnExplosion">Explosion</Button>
+    <Button Click="OnPowerUp">Power Up</Button>
+    <Button Click="OnHurt">Hurt</Button>
+    <Button Click="OnJump">Jump</Button>
+    <Button Click="OnBlip">Blip</Button>
+
+  </StackPanel>
+
+</Window>
