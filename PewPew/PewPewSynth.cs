@@ -8,6 +8,13 @@ namespace PewPew
 {
     public sealed class PewPewSynth : ISampleProvider
     {
+        private enum EnvStage
+        {
+            Attack = 0,
+            Sustain = 1,
+            Decay = 2
+        }
+
         private readonly Random _random = new Random();
 
         private const float master_vol = 0.05f;
@@ -16,9 +23,11 @@ namespace PewPew
         private PewPewPatch _patch;
 
         private const int PhaserBufferLength = 1024;
+        private const int NoiseBufferLength = 32;
 
-        private bool playing_sample;
-        private int phase;
+        private bool _isPlaying;
+
+        private int _phase;
         private double fperiod;
         private double fmaxperiod;
         private double fslide;
@@ -26,7 +35,7 @@ namespace PewPew
         private int period;
         private float square_duty;
         private float square_slide;
-        private int env_stage;
+        private EnvStage env_stage;
         private int env_time;
         private readonly int[] env_length = new int[3];
         private float env_vol;
@@ -35,7 +44,7 @@ namespace PewPew
         private int iphase;
         private readonly float[] phaser_buffer = new float[PhaserBufferLength];
         private int ipp;
-        private readonly float[] noise_buffer = new float[32];
+        private readonly float[] noise_buffer = new float[NoiseBufferLength];
         private float fltp;
         private float fltdp;
         private float fltw;
@@ -57,7 +66,7 @@ namespace PewPew
         {
             _patch = patch;
             Initialise(restart: false);
-            playing_sample = true;
+            _isPlaying = true;
         }
 
         private void Initialise(bool restart)
@@ -80,7 +89,7 @@ namespace PewPew
 
             if (!restart)
             {
-                phase = 0;
+                _phase = 0;
                 // reset filter
                 fltp = 0f;
                 fltdp = 0f;
@@ -98,11 +107,11 @@ namespace PewPew
                 vib_amp = _patch.VibratoDepth*0.5f;
                 // reset envelope
                 env_vol = 0f;
-                env_stage = 0;
+                env_stage = EnvStage.Attack;
                 env_time = 0;
-                env_length[0] = (int)(_patch.EnvelopeAttackTime*_patch.EnvelopeAttackTime*100000f);
-                env_length[1] = (int)(_patch.EnvelopeSustainTime*_patch.EnvelopeSustainTime*100000f);
-                env_length[2] = (int)(_patch.EnvelopeDecayTime*_patch.EnvelopeDecayTime*100000f);
+                env_length[(int)EnvStage.Attack]  = (int)(_patch.EnvelopeAttackTime*_patch.EnvelopeAttackTime*100000f);
+                env_length[(int)EnvStage.Sustain] = (int)(_patch.EnvelopeSustainTime*_patch.EnvelopeSustainTime*100000f);
+                env_length[(int)EnvStage.Decay]   = (int)(_patch.EnvelopeDecayTime*_patch.EnvelopeDecayTime*100000f);
 
                 fphase = (float)Math.Pow(_patch.PhaserOffset, 2f)*1020f;
                 if (_patch.PhaserOffset < 0f)
@@ -114,7 +123,7 @@ namespace PewPew
                 ipp = 0;
                 Array.Clear(phaser_buffer, 0, PhaserBufferLength);
 
-                for (var i = 0; i < 32; i++)
+                for (var i = 0; i < NoiseBufferLength; i++)
                     noise_buffer[i] = (float)_random.NextDouble()*2f - 1f;
 
                 rep_time = 0;
@@ -128,7 +137,7 @@ namespace PewPew
         {
             for (var i = 0; i < sampleCount; i++)
             {
-                if (!playing_sample)
+                if (!_isPlaying)
                     return 0;
 
                 rep_time++;
@@ -151,7 +160,7 @@ namespace PewPew
                 {
                     fperiod = fmaxperiod;
                     if (_patch.MinimumFrequency > 0f)
-                        playing_sample = false;
+                        _isPlaying = false;
                 }
                 var rfperiod = (float)fperiod;
                 if (vib_amp > 0f)
@@ -162,26 +171,36 @@ namespace PewPew
                 period = (int)rfperiod;
                 if (period < 8)
                     period = 8;
+
                 square_duty += square_slide;
                 if (square_duty < 0f)
                     square_duty = 0f;
-                if (square_duty > 0.5f)
+                else if (square_duty > 0.5f)
                     square_duty = 0.5f;
+
                 // volume envelope
                 env_time++;
-                if (env_time > env_length[env_stage])
+                if (env_time > env_length[(int)env_stage])
                 {
                     env_time = 0;
-                    env_stage++;
-                    if (env_stage == 3)
-                        playing_sample = false;
+                    if (env_stage == EnvStage.Decay)
+                        _isPlaying = false;
+                    else
+                        env_stage++;
                 }
-                if (env_stage == 0)
-                    env_vol = (float)env_time/env_length[0];
-                if (env_stage == 1)
-                    env_vol = 1f + (float)Math.Pow(1f - (float)env_time/env_length[1], 1f)*2f*_patch.EnvelopeSustainPunch;
-                if (env_stage == 2)
-                    env_vol = 1f - (float)env_time/env_length[2];
+
+                switch (env_stage)
+                {
+                    case EnvStage.Attack:
+                        env_vol = (float)env_time/env_length[(int)EnvStage.Attack];
+                        break;
+                    case EnvStage.Sustain:
+                        env_vol = 1f + (float)Math.Pow(1f - (float)env_time/env_length[(int)EnvStage.Sustain], 1f)*2f*_patch.EnvelopeSustainPunch;
+                        break;
+                    case EnvStage.Decay:
+                        env_vol = 1f - (float)env_time/env_length[(int)EnvStage.Decay];
+                        break;
+                }
 
                 // phaser step
                 fphase += fdphase;
@@ -203,20 +222,20 @@ namespace PewPew
                 for (var si = 0; si < 8; si++)
                 {
                     var sample = 0f;
-                    phase++;
-                    if (phase >= period)
+                    _phase++;
+                    if (_phase >= period)
                     {
 //				        phase = 0;
-                        phase %= period;
+                        _phase %= period;
                         if (_patch.WaveType == PewPewWaveType.Noise)
                         {
-                            for (var j = 0; j < 32; j++)
+                            for (var j = 0; j < NoiseBufferLength; j++)
                                 noise_buffer[j] = (float)_random.NextDouble()*2f - 1f;
                         }
                     }
 
                     // base waveform
-                    var fp = (float)phase/period;
+                    var fp = (float)_phase/period;
                     switch (_patch.WaveType)
                     {
                         case PewPewWaveType.Square:
@@ -229,7 +248,7 @@ namespace PewPew
                             sample = (float)Math.Sin(fp*2*Math.PI);
                             break;
                         case PewPewWaveType.Noise:
-                            sample = noise_buffer[phase*32/period];
+                            sample = noise_buffer[_phase* NoiseBufferLength / period];
                             break;
                     }
 
