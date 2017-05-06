@@ -25,7 +25,10 @@ namespace PewPew
             _mixer.MixerInputEnded += (sender, args) =>
             {
                 if (_tcsByProvider.TryGetValue(args.SampleProvider, out var tcs))
+                {
+                    _tcsByProvider.Remove(args.SampleProvider);
                     tcs.TrySetResult(0);
+                }
                 if (args.SampleProvider is PewPewSynth synth)
                     _synths.Release(synth);
             };
