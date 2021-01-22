@@ -1,5 +1,8 @@
 # pew-pew
 
+[![PewPew NuGet version](https://img.shields.io/nuget/v/PewPew)](https://www.nuget.org/packages/PewPew/)
+[![PewPew NuGet download count](https://img.shields.io/nuget/dt/PewPew)](https://www.nuget.org/packages/PewPew/)
+
 This library is a port of [DrPetter's sfxr](http://www.drpetter.se/project_sfxr.html) sound generator from C++ to C#.
 
 It provides a simple way to synthesize and play sound effects.
